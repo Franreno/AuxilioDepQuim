@@ -11,6 +11,7 @@ private:
     
     // Functions
     void exit_connection();
+    bool connect();
 
 
 public:
