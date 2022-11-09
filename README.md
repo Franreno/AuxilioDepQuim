@@ -5,16 +5,8 @@ Este projeto é a parte 3 da disciplina de Base de Dados SCC0640.
 
 ## Instalação
 
-Para instalar é necessário rodar o script install.sh que instalará o `PostgreSQL`.
+Para instalar é necessário baixar o `PostgreSQL` de acordo com o seu ambiente de desenvolvimento. Assim, entre [neste link](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) para baixar.
 
-Em ambientes Linux (Debian):
-```
-sudo ./install.sh
-```
 
-Em ambientes Windows:
-
-```
-```
 ## Execução
 
