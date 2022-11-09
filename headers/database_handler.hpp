@@ -1,11 +1,11 @@
-#include "libpq-fe.h"
 #include <iostream>
+#include "libpq-fe.h"
 
 class DatabaseHandler
 {
 private:
     // Atributes
-    const char *conninfo = "dbname = Auxilios";
+    const char *conninfo = "host=localhost port=5432 dbname=Auxilios password=docker user=postgres connect_timeout=10";
     PGconn *conn;
     PGresult *res;
     

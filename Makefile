@@ -17,7 +17,7 @@ run:
 
 clean:
 	rm -f *.o *.bin *.zip
-	find . -type f -executable -exec rm '{}' \;
+	rm prog
 
 zip:
 	zip -r zipped.zip Makefile ./src ./headers
