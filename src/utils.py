@@ -4,8 +4,10 @@ from commands import Funcionalidades
 def getInput(startString: str = '>> '):
     return input(startString)
 
+
 def getAllCommands():
     return Funcionalidades.instances
+
 
 def commandNames() -> list:
     return list(map(lambda x: x.name, Funcionalidades.instances))
@@ -29,19 +31,16 @@ def compareIfListsAreEqualByOgSize(og: list, comp: list) -> bool:
 
 
 def matchAndRun(funcToSearch: str, *args) -> bool:
-    print("Entrei")
     func: Funcionalidades
     # Searches for `funcToSearch` in all of instances of `Funcionalidades`
     for func in Funcionalidades.instances:
 
-        print(f"Procudando... {func}")
         # List of words inside the `func` name
         funcWords: list = func.name.split()
 
         funcToSearchWords: list = funcToSearch.split()
 
-        if compareFuncsLengths(funcWords, funcToSearchWords) and funcToSearchWords[:len(funcWords)] == funcWords:
-            print("Vou rodar")
+        if compareFuncsLengths(funcWords, funcToSearchWords) and compareIfListsAreEqualByOgSize(funcWords, funcToSearchWords):
             func.run(*args, funcToSearch[len(func.name):])
             return True
 

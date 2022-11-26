@@ -41,9 +41,9 @@ def funcionalidade(name: str, help: str = None):
 @funcionalidade("lista terceiro", help="Lista o terceiro pesquisado por nome")
 def listCitites(cur: cursor, _):
     # pegar input da cidade
-    print("Entrei")
-    nucpfcnpj = getInput("Numero: ")
 
+    nucpfcnpj = getInput("Numero: ")
+    
     try:
         cur.execute(
             f"SELECT * FROM terceiros t WHERE t.nucpfcnpj = '{nucpfcnpj}';")
