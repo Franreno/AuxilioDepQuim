@@ -1,8 +1,14 @@
-from commands import *
+from commands import Funcionalidades
 
 
 def getInput(startString: str = '>> '):
     return input(startString)
+
+def getAllCommands():
+    return Funcionalidades.instances
+
+def commandNames() -> list:
+    return list(map(lambda x: x.name, Funcionalidades.instances))
 
 
 def compareFuncsLengths(og: list, comp: list) -> bool:

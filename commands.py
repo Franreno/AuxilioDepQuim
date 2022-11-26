@@ -1,6 +1,9 @@
 from database_handler import DatabaseHandler
 from psycopg2._psycopg import connection, cursor
-from utils import getInput
+
+
+def getInput(startString: str = '>> '):
+    return input(startString)
 
 
 class Funcionalidades:
@@ -33,29 +36,22 @@ def funcionalidade(name: str, help: str = None):
     return decorator
 
 
-def getAllCommands():
-    return Funcionalidades.instances
-
-
-def commandNames() -> list:
-    return list(map(lambda x: x.name, Funcionalidades.instances))
-
-
 ### CRIACAO DAS FUNCIONALIDADES ###
 
-@funcionalidade("lista cidade", help="Lista a cidade pesquisada por nome")
+@funcionalidade("lista terceiro", help="Lista o terceiro pesquisado por nome")
 def listCitites(cur: cursor, _):
     # pegar input da cidade
     print("Entrei")
-    cityName = getInput("Nome da cidade: ")
+    nucpfcnpj = getInput("Numero: ")
 
     try:
-        cur.execute(f"SELECT * FROM city c WHERE c.name = '{cityName}';")
+        cur.execute(
+            f"SELECT * FROM terceiros t WHERE t.nucpfcnpj = '{nucpfcnpj}';")
     except:
-        raise Exception(f"Erro ao pegar dados da cidade {cityName}")
+        raise Exception(f"Erro ao pegar dados da cidade {nucpfcnpj}")
 
     if cur.rowcount == 0:
-        print("Nao ha cidades")
+        print("Nao ha terceiros com esse numero")
     else:
         result = cur.fetchall()
         print(result)
