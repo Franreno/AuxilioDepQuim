@@ -2,6 +2,6 @@
 
 sudo docker rm -f $(sudo docker ps -lq)
 
-sudo scripts/install.sh
+sudo ./install.sh
 
 sudo docker ps -a

@@ -2,6 +2,7 @@ from utils import *
 
 
 def main():
+    clearScreen()
     while True:
         cmd = getInput()
         matchAndRun(cmd)

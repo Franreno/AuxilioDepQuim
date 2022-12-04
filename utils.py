@@ -31,6 +31,12 @@ def compareIfListsAreEqualByOgSize(og: list, comp: list) -> bool:
 
 
 def matchAndRun(funcToSearch: str, *args) -> bool:
+    if(funcToSearch.lower() == 'clear'):
+        clearScreen()
+    if(funcToSearch.lower() == 'exit'):
+        exit()
+
+
     func: Funcionalidades
     # Searches for `funcToSearch` in all of instances of `Funcionalidades`
     for func in Funcionalidades.instances:
@@ -45,3 +51,10 @@ def matchAndRun(funcToSearch: str, *args) -> bool:
             return True
 
     return False
+
+def clearScreen():
+    from os import system, name
+    if name == 'nt':
+        _ = system('cls')
+    else:
+        _ = system('clear')
