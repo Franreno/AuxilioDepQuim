@@ -70,7 +70,7 @@ def funcionalidade(name: str, help: str = None):
 @funcionalidade('consultas', help="Roda o arquivo de consultas.sql")
 def runConsultasSQL(cur: cursor, _):
     # Open and read all
-    fd = open('consultas.sql', 'r')
+    fd = open('./data/consultas.sql', 'r')
     sqlFile = fd.read()
     fd.close()
 
