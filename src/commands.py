@@ -26,12 +26,12 @@ def print_psycopg2_exception(err):
     print ("pgcode:", err.pgcode, "\n")
 
 
-def outputToScreen(cursor: cursor) -> None:
+def outputToScreen(cursor: cursor) -> str:
 
     table = [list(result) for result in cursor.fetchall() ]
     table.insert(0, [desc[0].upper() for desc in cursor.description])
 
-    print(tabulate(table))
+    return tabulate(table)
 
 class Funcionalidades:
     instances = []
@@ -47,8 +47,9 @@ class Funcionalidades:
         conn: connection
         cur: cursor
         conn, cur = self.dbHandler.connectToDatabase()
-        self.handler(cur, args)
+        outputList = self.handler(cur, args)
         self.dbHandler.disconnectFromDatabase(conn=conn, cur=cur)
+        return outputList
 
     def displayHelp(self):
         print(self.help or "...sem mensagem...")
@@ -84,9 +85,11 @@ def runConsultasSQL(cur: cursor, _):
         if(cmd.find('--') != -1):
             sqlCommands.pop(index)
 
+    outputList = []
+
     # Execute the queries
     for command in sqlCommands:
-        print(f"\nRODANDO CONSULTA:   {command}\n")
+        outputList.append(f"\nRODANDO CONSULTA:   {command}\n")
         try:
             cur.execute(command)
         except:
@@ -96,12 +99,9 @@ def runConsultasSQL(cur: cursor, _):
         if cur.row_factory == 0:
             print("[ INFO ] Sem resultados ")
         else:
-            outputToScreen(cur)
-
-@funcionalidade("clear", help="Limpa a tela")
-def clearScreen(cur: cursor, _):
-    import os
-    os.system('clear')
+            outputList.append(outputToScreen(cur))
+    
+    return outputList
 
 @funcionalidade("debug", help="Roda um sql")
 def runSQL(cur: cursor, _):

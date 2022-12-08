@@ -30,7 +30,7 @@ def compareIfListsAreEqualByOgSize(og: list, comp: list) -> bool:
     return comp[:len(og)] == og
 
 
-def matchAndRun(funcToSearch: str, *args) -> bool:
+def matchAndRun(funcToSearch: str, *args) -> str:
     if(funcToSearch.lower() == 'clear'):
         clearScreen()
     if(funcToSearch.lower() == 'exit'):
@@ -47,10 +47,8 @@ def matchAndRun(funcToSearch: str, *args) -> bool:
         funcToSearchWords: list = funcToSearch.split()
 
         if compareFuncsLengths(funcWords, funcToSearchWords) and compareIfListsAreEqualByOgSize(funcWords, funcToSearchWords):
-            func.run(*args, funcToSearch[len(func.name):])
-            return True
+            return func.run(*args, funcToSearch[len(func.name):])
 
-    return False
 
 def clearScreen():
     from os import system, name
