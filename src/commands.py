@@ -48,7 +48,7 @@ class Funcionalidades:
         cur: cursor
         conn, cur = self.dbHandler.connectToDatabase()
         outputList = self.handler(cur, args, param)
-        self.dbHandler.disconnectFromDatabase(conn=conn, cur=cur)
+        self.dbHandler.disconnectFromDatabase(conn=conn, cur=cur, commit = True)
         return outputList
 
     def displayHelp(self):
@@ -159,8 +159,8 @@ def insertCentro(cur: cursor, args, *param):
 @funcionalidade("insertEmp", help="insere empresa")
 def insertEmp(cur: cursor, args, *param):
     sqlTerceiros = "INSERT INTO TERCEIROS (NUCPFCNPJ,NOME,TIPO) VALUES (%s, %s,'EMPRESA PARCEIRA');"
+    data = (args[1], args[0])
     try:
-        data = (args[1], args[0])
         cur.execute(sqlTerceiros, data)
     except Exception as e:
         print(e)
@@ -174,7 +174,9 @@ def insertEmp(cur: cursor, args, *param):
         print(e)
         return(-1)
 
-    return "Empresa inserida com sucesso!"
+    cur.execute("SELECT NOME FROM TERCEIROS;")
+    print(outputToScreen(cur))
+    return outputToScreen(cur)
 
 @funcionalidade("insertFunc", help="insereFuncionario")
 def insertFunc(cur: cursor, args, *param):
