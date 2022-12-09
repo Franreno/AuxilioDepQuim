@@ -8,10 +8,10 @@ Esta aplicação foi planejada para o seu funcionamente automatico em ambientes 
 # Contribuidores
 Este projeto foi inicialmente desenvolvido por:
 
-- Emanuel Lace Aranha
-- Felipe de Alcantara Tomé
-- Francisco Reis Nogueira
-- João Augusto Fernandes Barbosa
+- Emanuel Lace Aranha - 11234224
+- Felipe de Alcantara Tomé - 11800970
+- Francisco Reis Nogueira - 11954374
+- João Augusto Fernandes Barbosa - 11953348
 
 
 ## Instalação
