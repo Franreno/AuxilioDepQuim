@@ -11,6 +11,11 @@ class App(customtkinter.CTk):
 
 
     def __init__(self, dbHandler: DatabaseHandler) -> None:
+        """Gerador inicial do GUI. Cria-se os botões a esquerda, titulos e espaço DisplayFrame, onde o usuario interage
+
+        Args:
+            dbHandler (DatabaseHandler): Handler criado para manipulação da database
+        """
         super().__init__()
 
         self.dbHandler = dbHandler
@@ -37,7 +42,7 @@ class App(customtkinter.CTk):
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
 
         self.sidebar_button_2 = customtkinter.CTkButton(
-            self.sidebar_frame, text="Rodar SQL",  command = self.runSQL)
+            self.sidebar_frame, text="Rodar/Debugar  SQL",  command = self.runSQL)
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
 
         self.sidebar_button_3 = customtkinter.CTkButton(
@@ -72,6 +77,8 @@ class App(customtkinter.CTk):
 
 
     def showInfo(self):
+        """Função que procura todas as tabelas da database, retornando uma lista no dropdown onde o usuario poderá selecionar o atributo que deseja consultar
+        """
         tableName = matchAndRun('tableNames')
         self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 800, height = 1000)
@@ -88,6 +95,11 @@ class App(customtkinter.CTk):
         pass
     
     def queryData(self, coluna: str):
+        """Função que passa os atributos necessários para a query especifica, no caso, a coluna (recebida por parametro) e a tabela(passada como argumento na classe)
+
+        Args:
+            coluna (str): _description_
+        """
         data = (self.tempDataSelect, coluna)
         output = matchAndRun('directQuery', data)
         self.textbox.configure(state='normal')
@@ -97,6 +109,11 @@ class App(customtkinter.CTk):
         pass
 
     def selectColumn(self, table: str):
+        """Dada uma tabela, essa função itera através de todos os seus atributos gerando uma lista para o usuario selecionar o desejado
+
+        Args:
+            table (str): tabela a ser iterada
+        """
         self.tempDataSelect = table
         columnName = matchAndRun('columnNames', table)
         columnName.insert(0, '*')
@@ -107,6 +124,8 @@ class App(customtkinter.CTk):
 
 
     def getEntryCentro(self):
+        """Recebe as entradas dos inputs do GUI e repassa para o handler formular a consulta em SQL
+        """
         nome = self.entryNome.get()
         cnpj = self.entryCnpj.get()
         caixa = self.entryCaixa.get()
@@ -121,6 +140,8 @@ class App(customtkinter.CTk):
 
 
     def cadCentro(self):
+        """Cria o Display necessario para os inputs de informações relacionadas ao cadastro de centro e os vincula com a função disparada no botão
+        """
         self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 800, height = 1000)
         self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
@@ -145,6 +166,8 @@ class App(customtkinter.CTk):
 
 
     def getInputEmp(self):
+        """Recebe os inputs das entrys relacionadas ao cadastro da empresa
+        """
         Nome = self.entryNome.get()
         Cnpj = self.entryCnpj.get()
         NumFunc = self.entryNumFunc.get()
@@ -158,7 +181,10 @@ class App(customtkinter.CTk):
 
 
     def cadEmpresa(self):
+        """Criação do display para coleta das entrys relacionadas ao cadastro de empresa
+        """
         self.DisplayFrame.destroy()
+
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
         self.DisplayFrame.grid(row = 1, column = 1, columnspan = 4, sticky = 'nsew')
 
@@ -184,6 +210,8 @@ class App(customtkinter.CTk):
 
 
     def getInputFunc(self):
+        """Receber os inputs das entrys do Cadastro de funcionario e repassa-las como parametros para a geração de uma consulta SQL
+        """
         nome = self.entryNome.get()
         CPF = self.entryCPF.get()
         Centro = self.entryCentro.get()
@@ -196,6 +224,8 @@ class App(customtkinter.CTk):
 
 
     def insertFunc(self):   
+        """Criação das entrys necessárias para a coleta de informações relacionadas a inserção de um funcionário
+        """
         self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
         self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
@@ -216,6 +246,8 @@ class App(customtkinter.CTk):
         pass
 
     def runConsultas(self):
+        """Repassa pelo matchandrun a busca por 'consultas' onde será realizada as buscas explicitadas no arquivo consultas.sql
+        """
         self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
         self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
@@ -231,6 +263,8 @@ class App(customtkinter.CTk):
         pass
 
     def getCommand(self):
+        """Coleta do comando digitado em textbox pelo usuario e o repassa para a geração de uma consulta sql
+        """
         inp = self.textbox1.get("1.0", "end-1c")
         output = matchAndRun('runSQL', inp)
         self.textbox.configure(state='normal')
@@ -238,11 +272,13 @@ class App(customtkinter.CTk):
         self.textbox.insert("0.0", output)
         self.textbox.configure(state='disabled')
         self.textbox1.delete("0.0", "end")
-        return inp 
+        pass
 
 
 
     def runSQL(self):
+        """Criação do Display com entrys necessárias para a coleta da consulta SQL digitada pelo usuário
+        """
         self.DisplayFrame.destroy()
 
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
@@ -252,7 +288,7 @@ class App(customtkinter.CTk):
 
         self.textbox.configure(state='normal')
         self.textbox.delete("0.0", "end")
-        self.textbox.insert("0.0", "Digite seu código em SQL abaixo")
+        self.textbox.insert("0.0", "Digite seu código em SQL abaixo\nObviamente esse tipo de opção não estaria disponível ao usuário por ser perigosa,\nmas é bom pra debugar e fazer teste :)")
         self.textbox.configure(state='disabled')
         
         self.textbox1 = customtkinter.CTkTextbox(self.DisplayFrame, height=100)
