@@ -63,7 +63,7 @@ class App(customtkinter.CTk):
 
         self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
         self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
-        self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
+        self.textbox.insert("0.0", "Sistema De consultas\n\n" + "Opções de manipulação e Análise no seu menu esquerdo!.\n\n")
         self.textbox.configure(state='disabled')
 
 
@@ -171,6 +171,13 @@ class App(customtkinter.CTk):
         pass
 
     def runConsultas(self):
+
+        self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
+        self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
+        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
+
+        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
         output = matchAndRun('consultas')
         self.textbox.configure(state='normal')
         self.textbox.delete("0.0", "end")
@@ -192,6 +199,13 @@ class App(customtkinter.CTk):
 
 
     def runSQL(self):
+        self.DisplayFrame.destroy()
+
+        self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
+        self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
+        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
+
         self.textbox.configure(state='normal')
         self.textbox.delete("0.0", "end")
         self.textbox.insert("0.0", "Digite seu código em SQL abaixo")
