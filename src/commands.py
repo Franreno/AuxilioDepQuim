@@ -71,7 +71,7 @@ def funcionalidade(name: str, help: str = None):
 @funcionalidade('consultas', help="Roda o arquivo de consultas.sql")
 def runConsultasSQL(cur: cursor, _, __):
     # Open and read all
-    fd = open('../data/consultas.sql', 'r')
+    fd = open('./data/consultas.sql', 'r')
     sqlFile = fd.read()
     fd.close()
 
@@ -194,3 +194,21 @@ def listCitites(cur: cursor, _):
         print("Nao ha terceiros com esse numero")
     else:
         outputToScreen(cur)
+
+@funcionalidade('listTables')
+def listTables(cur: cursor, _, __):
+
+    sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';"
+
+    try:
+        cur.execute(sql)
+    except:
+        raise Exception(f"Erro ao pegar dados das tabelas")
+
+    rawData = outputToScreen(cur).split('\n')
+    rawData.pop(0)
+    rawData.pop(0)
+    rawData.pop()
+
+
+    return [data.capitalize() for data in rawData]

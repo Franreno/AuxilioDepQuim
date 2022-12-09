@@ -33,7 +33,7 @@ class App(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.sidebar_button_1 = customtkinter.CTkButton(
-            self.sidebar_frame, text="Mostrar tabelas")
+            self.sidebar_frame, text="Mostrar tabelas", command= self.showTables)
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
 
         self.sidebar_button_2 = customtkinter.CTkButton(
@@ -78,6 +78,19 @@ class App(customtkinter.CTk):
             tkinter.messagebox.showinfo("ERRO", "Por favor, verificar a integridade das informações adicionadas")
         pass
 
+    def showTables(self):
+        self.DisplayFrame.destroy()
+        self.DisplayFrame = customtkinter.CTkFrame(self, width = 800, height = 1200)
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
+
+        allTables = matchAndRun('listTables')
+        firstTable = allTables[0]
+
+        self.optionMenu = customtkinter.CTkOptionMenu(self.DisplayFrame, width=200, values=allTables)
+        self.optionMenu.grid(row=1, column=1, columnspan=3, padx=(10,10), pady=(20,10))
+
+        self.tableTextBox = customtkinter.CTkTextbox(self.DisplayFrame, width=800)
+        self.tableTextBox.grid(row=2,column=1, columnspan=1, padx=(10,10), pady=(20,10))
 
     def cadCentro(self):
         self.DisplayFrame.destroy()
