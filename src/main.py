@@ -45,7 +45,7 @@ class App(customtkinter.CTk):
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
 
         self.sidebar_button_Func = customtkinter.CTkButton(
-            self.sidebar_frame, text="Inserir Funcionario", command = self.insertFunc)
+            self.sidebar_frame, text="Cadastrar Novo Funcionario", command = self.insertFunc)
         self.sidebar_button_Func.grid(row=4, column=0, padx=20, pady=10)
 
         self.sidebar_button_Emp = customtkinter.CTkButton(
@@ -56,26 +56,43 @@ class App(customtkinter.CTk):
             self.sidebar_frame, text="Inserir Centro")
         self.sidebar_button_Centro.grid(row=6, column=0, padx=20, pady=10)
         # Create output box
-        self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, corner_radius = 0)
-        self.DisplayFrame.grid_rowconfigure((0,1,2), weight=1)
-        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, sticky = "nsew")
+        
+
 
         self.textbox = customtkinter.CTkTextbox(self, height=400)
         self.textbox.grid(row=0, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
         self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
         self.textbox.configure(state='disabled')
 
+    def getInputFunc(self):
+        nome = self.entryNome.get()
+        CPF = self.entryCPF.get()
+        Centro = self.entryCentro.get()
+        data = [nome, CPF, Centro]
+        if matchAndRun('insertFunc', data) == -1:
+            tkinter.messagebox.showinfo("ERRO", "Por favor, verificar a integridade das informações adicionadas")
+        
+    
+
+        return
+
     def insertFunc(self):
 
         
         self.textbox.destroy()
-        self.grid_columnconfigure((1,2,3), weight = 1)
-        self.grid_rowconfigure((0,1,2,3), weight = 1)
         self.entryNome= customtkinter.CTkEntry(self, placeholder_text = "Nome")
-        self.entryNome.grid(row=0, column = 1, columnspan = 2, padx=(10, 10), pady=(20,10), sticky="nsew")
+        self.entryNome.grid(row=0, column = 1, columnspan = 2, padx=(10, 10), pady=(20,10), sticky="ew")
 
         self.entryCPF= customtkinter.CTkEntry(self, placeholder_text = "CPF")
-        self.entryCPF.grid(row=0, column= 3, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="nsew") 
+        self.entryCPF.grid(row=0, column= 3, columnspan = 2, padx=(10, 10), pady=(20,10), sticky="ew")
+        
+
+        self.entryCentro = customtkinter.CTkEntry(self, placeholder_text = "Centro")
+        self.entryCentro.grid(row = 1, column = 1, sticky = "ew", padx=(10, 10), pady=(20,10))
+        
+        
+        self.getInputButton = customtkinter.CTkButton(self,text = "Inserir", command = self.getInputFunc)
+        self.getInputButton.grid(row = 1, column = 2, padx = 20, pady = 20)
         return
 
     def runConsultas(self):

@@ -109,14 +109,40 @@ def runSQL(cur: cursor, args, *param):
     try:
         cur.execute(sql)
     except:
-            return("[ ERRO ] Commando com erro")
+        return("[ ERRO ] Commando com erro")
 
     if cur.row_factory == 0:
-            return("[ INFO ] Sem resultados ")
+        return("[ INFO ] Sem resultados ")
     else:
         return outputToScreen(cur)
     
+@funcionalidade("insertFunc", help="insereFuncionario")
+def insertFunc(cur: cursor, args, *param):
+    sqlTerceiros = "INSERT INTO TERCEIROS (NUCPFCNPJ,NOME,TIPO) VALUES (%s, %s,'PESSOA FISICA');"
+    try:
+        data = (args[1], args[0])
+        cur.execute(sqlTerceiros, data)
+    except:
+        return(-1)
 
+
+    sqlPF = "INSERT INTO PESSOA_FISICA(CPF) VALUES (%s);"
+    sqlTipo = "INSERT INTO TIPO_PESSOA_FISICA(CPF,TIPOPF) VALUES (%s,'FUNCIONARIO');"
+    sqlFunc = "INSERT INTO FUNCIONARIO(CPF,CENTRO) VALUES (%s, %s);"
+
+    try:
+        cur.execute(sqlPF, [args[1]])
+        cur.execute(sqlTipo, [args[1]])
+
+        data = (args[1], args[2])
+        cur.execute(sqlFunc, data)
+
+    except:
+        return(-1)
+    
+    cur.execute("SELECT F.CPF FROM FUNCIONARIO F;")
+    print(outputToScreen(cur))
+    return outputToScreen(cur)
 
 @funcionalidade("lista terceiro", help="Lista o terceiro pesquisado por nome")
 def listCitites(cur: cursor, _):
