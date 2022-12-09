@@ -212,3 +212,19 @@ def listTables(cur: cursor, _, __):
 
 
     return [data.capitalize() for data in rawData]
+
+
+@funcionalidade('getTableSchema')
+def getTableSchema(cur: cursor, args, *param):
+
+    tableName: str = args
+    tableName = tableName.lower()
+
+    sql = f"select column_name as coluna, data_type as tipo, character_maximum_length as tam from INFORMATION_SCHEMA.COLUMNS  where table_name = '{tableName}';"
+
+    try:
+        cur.execute(sql)
+    except:
+        raise Exception(f"Erro ao pegar dados das tabelas")
+
+    return outputToScreen(cur)

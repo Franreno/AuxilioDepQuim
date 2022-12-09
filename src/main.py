@@ -33,27 +33,27 @@ class App(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.sidebar_button_1 = customtkinter.CTkButton(
-            self.sidebar_frame, text="Mostrar tabelas", command= self.showTables)
+            self.sidebar_frame, text="Mostrar tabelas", command= self.showTables, width=250)
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
 
         self.sidebar_button_2 = customtkinter.CTkButton(
-            self.sidebar_frame, text="Rodar SQL",  command = self.runSQL)
+            self.sidebar_frame, text="Rodar SQL",  command = self.runSQL, width=250)
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
 
         self.sidebar_button_3 = customtkinter.CTkButton(
-            self.sidebar_frame, text="Rodar Consultas.sql", command=self.runConsultas)
+            self.sidebar_frame, text="Rodar Consultas.sql", command=self.runConsultas, width=250)
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
 
         self.sidebar_button_Func = customtkinter.CTkButton(
-            self.sidebar_frame, text="Cadastrar Novo Funcionario", command = self.insertFunc)
+            self.sidebar_frame, text="Cadastrar Novo Funcionario", command = self.insertFunc, width=250)
         self.sidebar_button_Func.grid(row=4, column=0, padx=20, pady=10)
 
         self.sidebar_button_Emp = customtkinter.CTkButton(
-            self.sidebar_frame, text="Cadastrar Empresa", command = self.cadEmpresa)
+            self.sidebar_frame, text="Cadastrar Empresa", command = self.cadEmpresa, width=250)
         self.sidebar_button_Emp.grid(row=5, column=0, padx=20, pady=10)
 
         self.sidebar_button_Centro = customtkinter.CTkButton(
-            self.sidebar_frame, text="Inserir Centro", command = self.cadCentro)
+            self.sidebar_frame, text="Inserir Centro", command = self.cadCentro, width=250)
         self.sidebar_button_Centro.grid(row=6, column=0, padx=20, pady=10)
         # Create output box
         
@@ -84,18 +84,45 @@ class App(customtkinter.CTk):
         self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
 
         allTables = matchAndRun('listTables')
-        firstTable = allTables[0]
+        
+        self.showTablesLabel = customtkinter.CTkLabel(
+            self.DisplayFrame, 
+            text="Escolha a tabela",
+            font=customtkinter.CTkFont(size=18)
+        )
+        self.showTablesLabel.grid(row=0, column=0, padx=(0,10), pady=(20,10))
 
-        self.optionMenu = customtkinter.CTkOptionMenu(self.DisplayFrame, width=200, values=allTables)
-        self.optionMenu.grid(row=1, column=1, columnspan=3, padx=(10,10), pady=(20,10))
 
         self.tableTextBox = customtkinter.CTkTextbox(self.DisplayFrame, width=800)
-        self.tableTextBox.grid(row=2,column=1, columnspan=1, padx=(10,10), pady=(20,10))
+        self.tableTextBox.grid(row=3,column=0, padx=(0,10), pady=(20,10))
+
+        self.updatedValues(allTables[0])
+
+        self.optionMenu = customtkinter.CTkOptionMenu(
+            self.DisplayFrame, 
+            width=300, 
+            values=allTables,
+            command=self.updatedValues
+        )
+        self.optionMenu.grid(row=2, column=0, padx=(10,10), pady=(20,10))
+
+
+    def updatedValues(self, table: str):
+        tableSchema = matchAndRun('getTableSchema', table)
+        self.updateValueOnShowTables(tableSchema)
+
+
+    def updateValueOnShowTables(self, values):
+        self.tableTextBox.configure(state='normal')
+        self.tableTextBox.delete("0.0", "end")
+        self.tableTextBox.insert("0.0", values)
+        self.tableTextBox.configure(state='disabled')
 
     def cadCentro(self):
         self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 800, height = 1000)
-        self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        #self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
 
         self.entryCnpj= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "CNPJ")
         self.entryCnpj.grid(row=0, column= 3, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
@@ -130,7 +157,7 @@ class App(customtkinter.CTk):
     def cadEmpresa(self):
         self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
-        self.DisplayFrame.grid(row = 1, column = 1, columnspan = 4, sticky = 'nsew')
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
 
         self.entryCnpj= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "CNPJ")
         self.entryCnpj.grid(row=2, column= 3, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
@@ -166,7 +193,8 @@ class App(customtkinter.CTk):
     def insertFunc(self):   
         self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
-        self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        #self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
         
         self.entryNome= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Nome")
         self.entryNome.grid(row=0, column = 1, columnspan = 2, padx=(10, 10), pady=(20,10), sticky="ew")
@@ -186,11 +214,12 @@ class App(customtkinter.CTk):
     def runConsultas(self):
 
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
-        self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
-        self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
-        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
+        #self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=600, width = 720)
+        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 5,padx=(20, 20), pady=(20, 20), sticky="nsew")
 
-        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 5,padx=(20, 20), pady=(20, 20), sticky="nsew")
         output = matchAndRun('consultas')
         self.textbox.configure(state='normal')
         self.textbox.delete("0.0", "end")
@@ -215,7 +244,8 @@ class App(customtkinter.CTk):
         self.DisplayFrame.destroy()
 
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
-        self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
+        #self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
         self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
         self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
 
