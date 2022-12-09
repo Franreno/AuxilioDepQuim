@@ -118,6 +118,16 @@ def runSQL(cur: cursor, args, *param):
         return outputToScreen(cur)
     
 
+@funcionalidade("insertCentro", help="insere centro")
+def insertCentro(cur: cursor, args, *param):
+    sqlCentro = "INSERT INTO CENTRO(CNPJ,CAIXA,NOME, LOCAL,PRESIDENTE) VALUES (%s,%s,%s,%s,%s);"
+    try:
+        cur.execute(sqlCentro, args)
+    except Exception as e:
+        print(e)
+        return(-1)
+    print('ok')
+
 @funcionalidade("insertEmp", help="insere empresa")
 def insertEmp(cur: cursor, args, *param):
     sqlTerceiros = "INSERT INTO TERCEIROS (NUCPFCNPJ,NOME,TIPO) VALUES (%s, %s,'EMPRESA PARCEIRA');"

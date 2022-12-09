@@ -53,17 +53,54 @@ class App(customtkinter.CTk):
         self.sidebar_button_Emp.grid(row=5, column=0, padx=20, pady=10)
 
         self.sidebar_button_Centro = customtkinter.CTkButton(
-            self.sidebar_frame, text="Inserir Centro")
+            self.sidebar_frame, text="Inserir Centro", command = self.cadCentro)
         self.sidebar_button_Centro.grid(row=6, column=0, padx=20, pady=10)
         # Create output box
         
 
+        self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
 
-        self.textbox = customtkinter.CTkTextbox(self, height=400)
-        self.textbox.grid(row=0, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
+        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
         self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
         self.textbox.configure(state='disabled')
 
+
+    def getEntryCentro(self):
+        nome = self.entryNome.get()
+        cnpj = self.entryCnpj.get()
+        caixa = self.entryCaixa.get()
+        presidente = self.entryPresidente.get()
+        local = self.entryLocal.get()
+        data = (cnpj, caixa, nome, local, presidente)
+        if matchAndRun('insertCentro', data) == -1:
+            tkinter.messagebox.showinfo("ERRO", "Por favor, verificar a integridade das informações adicionadas")
+        pass
+
+
+    def cadCentro(self):
+        self.DisplayFrame.destroy()
+        self.DisplayFrame = customtkinter.CTkFrame(self, width = 800, height = 1000)
+        self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+
+        self.entryCnpj= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "CNPJ")
+        self.entryCnpj.grid(row=0, column= 3, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+
+        self.entryNome= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Nome")
+        self.entryNome.grid(row=0, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+
+        self.entryCaixa= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Caixa")
+        self.entryCaixa.grid(row=2, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+
+        self.entryPresidente= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Presidente")
+        self.entryPresidente.grid(row=3, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+
+        self.entryLocal= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Local")
+        self.entryLocal.grid(row=2, column= 3, padx=(10, 10), pady=(20,10), sticky="ew")
+
+        self.getInputButton = customtkinter.CTkButton(self.DisplayFrame,text = "Inserir", command = self.getEntryCentro)
+        self.getInputButton.grid(row =3, column = 3, padx = 20, pady = 20)
 
 
     def getInputEmp(self):
@@ -78,26 +115,29 @@ class App(customtkinter.CTk):
 
 
     def cadEmpresa(self):
+        self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
-        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
+        self.DisplayFrame.grid(row = 1, column = 1, columnspan = 4, sticky = 'nsew')
 
         self.entryCnpj= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "CNPJ")
-        self.entryCnpj.grid(row=1, column= 3, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+        self.entryCnpj.grid(row=2, column= 3, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
 
         self.entryNome= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Nome")
-        self.entryNome.grid(row=1, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+        self.entryNome.grid(row=2, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
 
         self.entryNumFunc= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Numero de Funcionarios")
-        self.entryNumFunc.grid(row=2, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+        self.entryNumFunc.grid(row=3, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
 
         self.entryNumMax= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Numero Maximo de Funcionarios")
-        self.entryNumMax.grid(row=3, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+        self.entryNumMax.grid(row=4, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
         
         self.getInputButton = customtkinter.CTkButton(self.DisplayFrame,text = "Inserir", command = self.getInputEmp)
-        self.getInputButton.grid(row = 2, column = 3, padx = 20, pady = 20)
+        self.getInputButton.grid(row =3, column = 3, padx = 20, pady = 20)
 
 
         pass
+
+    
 
 
     def getInputFunc(self):
@@ -111,7 +151,7 @@ class App(customtkinter.CTk):
 
 
     def insertFunc(self):   
-        self.textbox.destroy()
+        self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
         self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
         
@@ -157,10 +197,10 @@ class App(customtkinter.CTk):
         self.textbox.insert("0.0", "Digite seu código em SQL abaixo")
         self.textbox.configure(state='disabled')
         
-        self.textbox1 = customtkinter.CTkTextbox(self, height=100)
-        self.textbox1.grid(row=2, column=1, padx=(20, 20), pady=(20, 10), sticky="nsew")
-        self.main_button_run = customtkinter.CTkButton(self, command = self.getCommand, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
-        self.main_button_run.grid(row=3, column=1, padx=(20, 20), pady=(0, 0), sticky="nsew")
+        self.textbox1 = customtkinter.CTkTextbox(self.DisplayFrame, height=100)
+        self.textbox1.grid(row=5, column=1, columnspan = 4, padx=(20, 20), pady=(20, 10), sticky="ew")
+        self.main_button_run = customtkinter.CTkButton(self.DisplayFrame, command = self.getCommand, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+        self.main_button_run.grid(row=6, column=1, columnspan = 4, padx=(20, 20), pady=(0, 0), sticky="ew")
         self.main_button_run.configure(text="Rodar")
         pass
 
