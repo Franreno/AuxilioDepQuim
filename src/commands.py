@@ -118,6 +118,34 @@ def runSQL(cur: cursor, args, *param):
         return outputToScreen(cur)
     
 
+@funcionalidade("tableNames", help="retorna nome das tabelas")
+def tableName(cur: cursor, args, *param):
+    tables = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';"
+    try:
+        cur.execute(tables)
+    except Exception as e:
+        print(e)
+    table = [result[0] for result in cur.fetchall() ]
+    return(table)
+
+
+@funcionalidade("columnNames", help="retorna atributos")
+def columnNames(cur: cursor, args, *param):
+    coluna = str(args)
+    try:
+        cur.execute("SELECT * FROM " + coluna + " WHERE 1=0;")
+    except Exception as e:
+        print(e)
+    table = [result for result in cur.fetchall() ]
+    table.insert(0, [desc[0].upper() for desc in cur.description])
+    return(table[0])
+
+@funcionalidade("directQuery", help="insere centro")
+def directQuery(cur: cursor, args, *param):
+    cur.execute("SELECT "+ args[1] + " FROM "+ args[0] + ";")
+    return outputToScreen(cur)
+
+
 @funcionalidade("insertCentro", help="insere centro")
 def insertCentro(cur: cursor, args, *param):
     sqlCentro = "INSERT INTO CENTRO(CNPJ,CAIXA,NOME, LOCAL,PRESIDENTE) VALUES (%s,%s,%s,%s,%s);"
