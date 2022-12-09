@@ -128,7 +128,7 @@ def runSQL(cur: cursor, args, *param):
     
 
 @funcionalidade("tableNames", help="retorna nome das tabelas")
-def tableName(cur: cursor):
+def tableName(cur: cursor, *params):
     """Itera sobre a base de dados a fim de gerar uma lista com o nome de todas as tabelas
 
     Args:
@@ -145,7 +145,7 @@ def tableName(cur: cursor):
 
 
 @funcionalidade("columnNames", help="retorna atributos")
-def columnNames(cur: cursor, args):
+def columnNames(cur: cursor, args, *params):
     """Dada uma tabela, itera em cima desta e retorna uma lista com o nome de suas colunas
 
     Args:
@@ -162,13 +162,13 @@ def columnNames(cur: cursor, args):
     return(table[0])
 
 @funcionalidade("directQuery", help="insere centro")
-def directQuery(cur: cursor, args,):
+def directQuery(cur: cursor, args, *params):
     cur.execute("SELECT "+ args[1] + " FROM "+ args[0] + ";")
     return outputToScreen(cur)
 
 
 @funcionalidade("insertCentro", help="insere centro")
-def insertCentro(cur: cursor, args):
+def insertCentro(cur: cursor, args, *params):
     """Função para geração de um SQL de inserção de novos valores dentro de centro
 
     Args:
@@ -180,9 +180,10 @@ def insertCentro(cur: cursor, args):
         cur.execute(sqlCentro, args)
     except Exception as e:
         return(-1)
+    return
 
 @funcionalidade("insertEmp", help="insere empresa")
-def insertEmp(cur: cursor, args):
+def insertEmp(cur: cursor, args, *params):
     """Função para realizar a inserção de uma nova empresa. Inicialmente, os valores são inseridos em Terceiros e posteriormente, em Empresa Parceira
 
     Args:
@@ -207,13 +208,10 @@ def insertEmp(cur: cursor, args):
     except Exception as e:
         print(e)
         return(-1)
-
-    cur.execute("SELECT NOME FROM TERCEIROS;")
-    print(outputToScreen(cur))
-    return outputToScreen(cur)
+    return 
 
 @funcionalidade("insertFunc", help="insereFuncionario")
-def insertFunc(cur: cursor, args,):
+def insertFunc(cur: cursor, args, *params):
     """Gera um sql para a inserção de um novo funcionario, colocando-o inicialmente como pessoa fisica, depois na tabela do tipo de pessoa e por fim como funcionario
 
     Args:
@@ -244,9 +242,7 @@ def insertFunc(cur: cursor, args,):
 
     except:
         return(-1)
-
-    return outputToScreen(cur)
-
+    return 
 @funcionalidade("lista terceiro", help="Lista o terceiro pesquisado por nome")
 def listCitites(cur: cursor, _):
     # pegar input da cidade
