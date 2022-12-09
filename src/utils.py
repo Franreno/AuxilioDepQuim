@@ -1,18 +1,15 @@
 from commands import Funcionalidades
 
-def getInput(startString: str = '>> '):
-    return input(startString)
-
-
-def getAllCommands():
-    return Funcionalidades.instances
-
-
-def commandNames() -> list:
-    return list(map(lambda x: x.name, Funcionalidades.instances))
-
-
 def compareFuncsLengths(og: list, comp: list) -> bool:
+    """Compara se as duas listas possuem o tamanho de acordo com o teste
+
+    Args:
+        og (list): original list of words
+        comp (list): comparable list of words
+
+    Returns:
+        bool: true if len(comp) >= len(og)
+    """
     return len(comp) >= len(og)
 
 
@@ -30,12 +27,14 @@ def compareIfListsAreEqualByOgSize(og: list, comp: list) -> bool:
 
 
 def matchAndRun(funcToSearch: str, *args) -> str:
-    if(funcToSearch.lower() == 'clear'):
-        clearScreen()
-    if(funcToSearch.lower() == 'exit'):
-        exit()
+    """Pesquisa a funcao dentre as funcionalidades e roda a correta
 
+    Args:
+        funcToSearch (str): Funcao a ser rodada
 
+    Returns:
+        str: resultado da funcao
+    """
     func: Funcionalidades
     # Searches for `funcToSearch` in all of instances of `Funcionalidades`
     
@@ -45,11 +44,3 @@ def matchAndRun(funcToSearch: str, *args) -> str:
         funcToSearchWords: list = funcToSearch.split()
         if compareFuncsLengths(funcWords, funcToSearchWords) and compareIfListsAreEqualByOgSize(funcWords, funcToSearchWords):
             return func.run(*args, funcToSearch[len(func.name):])
-
-
-def clearScreen():
-    from os import system, name
-    if name == 'nt':
-        _ = system('cls')
-    else:
-        _ = system('clear')

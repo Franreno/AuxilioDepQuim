@@ -3,47 +3,51 @@ from psycopg2._psycopg import connection, cursor, OperationalError, Error
 from tabulate import tabulate
 import sys
 
-def getInput(startString: str = '>> '):
-    return input(startString)
-
-# define a function that handles and parses psycopg2 exceptions
-def print_psycopg2_exception(err):
-    # get details about the exception
-    err_type, err_obj, traceback = sys.exc_info()
-
-    # get the line number when exception occured
-    line_num = traceback.tb_lineno
-
-    # print the connect() error
-    print ("\npsycopg2 ERROR:", err, "on line number:", line_num)
-    print ("psycopg2 traceback:", traceback, "-- type:", err_type)
-
-    # psycopg2 extensions.Diagnostics object attribute
-    print ("\nextensions.Diagnostics:", err.diag)
-
-    # print the pgcode and pgerror exceptions
-    print ("pgerror:", err.pgerror)
-    print ("pgcode:", err.pgcode, "\n")
-
-
 def outputToScreen(cursor: cursor) -> str:
+    """Formata o resultado que esta dentro do cursor
 
+    Args:
+        cursor (cursor): Cursor do dbHabdler que contem os dados
+
+    Returns:
+        str: string formatada com os dadsos
+    """
+
+    # pega os dados das colunas
     table = [list(result) for result in cursor.fetchall() ]
+    # pega os nomes das colunas
     table.insert(0, [desc[0].upper() for desc in cursor.description])
 
     return tabulate(table)
 
 class Funcionalidades:
+    """Classe que junta as possiveis funcionalidades do programa
+    """
     instances = []
 
     dbHandler = DatabaseHandler()
 
     def __init__(self, name: str, handler: any, help: str = None) -> None:
+        """Construtor para a classe Funcionalidades
+
+        Args:
+            name (str): Nome da funcionalidade
+            handler (any): Funcao da funcionalidade
+            help (str, optional): Descricao da funcionalidade. Defaults to None.
+        """
         self.name = name
         self.handler = handler
         self.help = help
 
-    def run(self, args, *param):
+    def run(self, args, *param) -> str:
+        """Roda o handler da funcao
+
+        Args:
+            args (any): Argumentos da funcao
+
+        Returns:
+            str: Lista com o conteudo
+        """
         conn: connection
         cur: cursor
         conn, cur = self.dbHandler.connectToDatabase()
@@ -51,11 +55,13 @@ class Funcionalidades:
         self.dbHandler.disconnectFromDatabase(conn=conn, cur=cur, commit = True)
         return outputList
 
-    def displayHelp(self):
-        print(self.help or "...sem mensagem...")
-
-
 def funcionalidade(name: str, help: str = None):
+    """Criacao do decorator @ para a funcionalidade
+
+    Args:
+        name (str): Nome da funcionalidade
+        help (str, optional): Ajuda da funcionalidade. Defaults to None.
+    """
     def decorator(handler):
         Funcionalidades.instances.append(
             Funcionalidades(name, handler, help=help))
@@ -70,6 +76,14 @@ def funcionalidade(name: str, help: str = None):
 
 @funcionalidade('consultas', help="Roda o arquivo de consultas.sql")
 def runConsultasSQL(cur: cursor, _, __):
+    """Realiza todas as consultas presentes no arquivo consultas.sql
+
+    Args:
+        cur (cursor): Cursor da conexao com o banco de dados
+
+    Returns:
+        list: lista com os dados da consulta
+    """
     # Open and read all
     fd = open('./data/consultas.sql', 'r')
     sqlFile = fd.read()
@@ -93,11 +107,10 @@ def runConsultasSQL(cur: cursor, _, __):
         try:
             cur.execute(command)
         except:
-            print(f"[ ERRO ] Commando com erro: {command}")
-            return
+            return [f"[ ERRO ] Commando com erro: {command}"]
 
         if cur.row_factory == 0:
-            print("[ INFO ] Sem resultados ")
+            outputList.append("[ INFO ] Sem resultados ")
         else:
             outputList.append(outputToScreen(cur))
     
@@ -163,6 +176,14 @@ def columnNames(cur: cursor, args, *params):
 
 @funcionalidade("directQuery", help="insere centro")
 def directQuery(cur: cursor, args, *params):
+    """Query direta
+
+    Args:
+        cur (cursor): Cursor da conexao do banco de dados
+
+    Returns:
+        list: lista contendo os dados
+    """
     cur.execute("SELECT "+ args[1] + " FROM "+ args[0] + ";")
     return outputToScreen(cur)
 
@@ -243,26 +264,20 @@ def insertFunc(cur: cursor, args, *params):
     except:
         return(-1)
     return 
-@funcionalidade("lista terceiro", help="Lista o terceiro pesquisado por nome")
-def listCitites(cur: cursor, _):
-    # pegar input da cidade
-
-    nucpfcnpj = getInput("Numero: ")
-
-    try:
-        cur.execute(
-            f"SELECT * FROM terceiros t WHERE t.nucpfcnpj = '{nucpfcnpj}';")
-    except:
-        
-        raise Exception(f"Erro ao pegar dados da cidade {nucpfcnpj}")
-
-    if cur.rowcount == 0:
-        print("Nao ha terceiros com esse numero")
-    else:
-        outputToScreen(cur)
 
 @funcionalidade('listTables')
 def listTables(cur: cursor, _, __):
+    """Lista todas as tabelas do banco de dadoss
+
+    Args:
+        cur (cursor): Conexao com o banco de dados
+
+    Raises:
+        Exception: erro ao pegar os dados
+
+    Returns:
+        list: nome das tabelas
+    """
 
     sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';"
 
@@ -282,7 +297,17 @@ def listTables(cur: cursor, _, __):
 
 @funcionalidade('getTableSchema')
 def getTableSchema(cur: cursor, args, *param):
+    """Pega os nomes, tipos e tamanho das colunas de uma certa tabela
 
+    Args:
+        cur (cursor): Conexao com o banco de dados
+
+    Raises:
+        Exception: Erro ao pegar os dados do banco de dados
+
+    Returns:
+        list: Dados da tabela
+    """
     tableName: str = args
     tableName = tableName.lower()
 
