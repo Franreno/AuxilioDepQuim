@@ -26,8 +26,8 @@ class App(customtkinter.CTk):
 
         self.sidebar_frame = customtkinter.CTkFrame(
             self, width=140, corner_radius=0)
-        self.sidebar_frame.grid(row=0, column=0, rowspan=7, sticky="nsew")
-        self.sidebar_frame.grid_rowconfigure(7, weight=1)
+        self.sidebar_frame.grid(row=0, column=0, rowspan=8, sticky="nsew")
+        self.sidebar_frame.grid_rowconfigure(8, weight=1)
         self.logo_label = customtkinter.CTkLabel(
             self.sidebar_frame, text="Interface Auxilios", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
@@ -55,16 +55,55 @@ class App(customtkinter.CTk):
         self.sidebar_button_Centro = customtkinter.CTkButton(
             self.sidebar_frame, text="Inserir Centro", command = self.cadCentro)
         self.sidebar_button_Centro.grid(row=6, column=0, padx=20, pady=10)
+
+        self.sidebar_button_Centro = customtkinter.CTkButton(
+            self.sidebar_frame, text="Mostrar Informacoes", command = self.showInfo)
+        self.sidebar_button_Centro.grid(row=7, column=0, padx=20, pady=10)
         # Create output box
         
 
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
-        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 5, sticky = 'nsew')
 
         self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
         self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
         self.textbox.insert("0.0", "Sistema De consultas\n\n" + "Opções de manipulação e Análise no seu menu esquerdo!.\n\n")
         self.textbox.configure(state='disabled')
+
+
+    def showInfo(self):
+        tableName = matchAndRun('tableNames')
+        self.DisplayFrame.destroy()
+        self.DisplayFrame = customtkinter.CTkFrame(self, width = 800, height = 1000)
+        self.DisplayFrame.grid(row = 0, column = 1, sticky = 'nsew')
+
+        self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
+        self.textbox.grid(row=0, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.textbox.configure(state='disabled')
+
+        
+        self.optionmenu_1 = customtkinter.CTkOptionMenu(self.DisplayFrame, dynamic_resizing=False,
+                                                        values= tableName, command=self.selectColumn)
+        self.optionmenu_1.grid(row=1, column=1, padx=20, pady=(20, 10))
+        pass
+    
+    def queryData(self, coluna: str):
+        data = (self.tempDataSelect, coluna)
+        output = matchAndRun('directQuery', data)
+        self.textbox.configure(state='normal')
+        self.textbox.delete("0.0", "end")
+        self.textbox.insert("0.0", output)
+        self.textbox.configure(state='disabled')
+        pass
+
+    def selectColumn(self, table: str):
+        self.tempDataSelect = table
+        columnName = matchAndRun('columnNames', table)
+        columnName.insert(0, '*')
+        self.optionmenu_2 = customtkinter.CTkOptionMenu(self.DisplayFrame, dynamic_resizing=False,
+                                                        values= columnName, command = self.queryData)
+        self.optionmenu_2.grid(row=2, column=1, padx=20, pady=(20, 10))
+        pass
 
 
     def getEntryCentro(self):
@@ -171,13 +210,12 @@ class App(customtkinter.CTk):
         pass
 
     def runConsultas(self):
-
+        self.DisplayFrame.destroy()
         self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
         self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
         self.textbox = customtkinter.CTkTextbox(self.DisplayFrame, height=300, width = 720)
         self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
 
-        self.textbox.grid(row=1, column=1, rowspan = 4, columnspan = 4,padx=(20, 20), pady=(20, 20), sticky="nsew")
         output = matchAndRun('consultas')
         self.textbox.configure(state='normal')
         self.textbox.delete("0.0", "end")
