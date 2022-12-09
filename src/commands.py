@@ -48,7 +48,7 @@ class Funcionalidades:
         cur: cursor
         conn, cur = self.dbHandler.connectToDatabase()
         outputList = self.handler(cur, args, param)
-        self.dbHandler.disconnectFromDatabase(conn=conn, cur=cur)
+        self.dbHandler.disconnectFromDatabase(conn=conn, cur=cur, commit = True)
         return outputList
 
     def displayHelp(self):
@@ -105,6 +105,15 @@ def runConsultasSQL(cur: cursor, _, __):
 
 @funcionalidade("runSQL", help="Roda um sql")
 def runSQL(cur: cursor, args, *param):
+    """Recebe uma string como parametro e executa ela como um codigo SQL.
+
+    Args:
+        cur (cursor): cursor de manipulação da database
+        args (_type_): string com a consulta
+
+    Returns:
+        _type_: retorna o resultado da consulta de forma tabular/formatada. Pode retornar também ERRO ou Sem resultados.
+    """
     sql = args.replace('\n', '')
     try:
         cur.execute(sql)
@@ -119,7 +128,13 @@ def runSQL(cur: cursor, args, *param):
     
 
 @funcionalidade("tableNames", help="retorna nome das tabelas")
-def tableName(cur: cursor, args, *param):
+def tableName(cur: cursor, *params):
+    """Itera sobre a base de dados a fim de gerar uma lista com o nome de todas as tabelas
+
+    Args:
+        cur (cursor): cursor de manipulação da databse
+
+    """
     tables = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';"
     try:
         cur.execute(tables)
@@ -130,7 +145,13 @@ def tableName(cur: cursor, args, *param):
 
 
 @funcionalidade("columnNames", help="retorna atributos")
-def columnNames(cur: cursor, args, *param):
+def columnNames(cur: cursor, args, *params):
+    """Dada uma tabela, itera em cima desta e retorna uma lista com o nome de suas colunas
+
+    Args:
+        cur (cursor): cursor de manipulação da database
+        args (_type_): string com o nome da tabela a ser iterada
+    """
     coluna = str(args)
     try:
         cur.execute("SELECT * FROM " + coluna + " WHERE 1=0;")
@@ -141,26 +162,40 @@ def columnNames(cur: cursor, args, *param):
     return(table[0])
 
 @funcionalidade("directQuery", help="insere centro")
-def directQuery(cur: cursor, args, *param):
+def directQuery(cur: cursor, args, *params):
     cur.execute("SELECT "+ args[1] + " FROM "+ args[0] + ";")
     return outputToScreen(cur)
 
 
 @funcionalidade("insertCentro", help="insere centro")
-def insertCentro(cur: cursor, args, *param):
+def insertCentro(cur: cursor, args, *params):
+    """Função para geração de um SQL de inserção de novos valores dentro de centro
+
+    Args:
+        cur (cursor): cursor de manipulação da database
+        args (_type_): cnpj, caixa, nome, local e presidente a serem inseridos
+    """
     sqlCentro = "INSERT INTO CENTRO(CNPJ,CAIXA,NOME, LOCAL,PRESIDENTE) VALUES (%s,%s,%s,%s,%s);"
     try:
         cur.execute(sqlCentro, args)
     except Exception as e:
-        print(e)
         return(-1)
-    print('ok')
+    return
 
 @funcionalidade("insertEmp", help="insere empresa")
-def insertEmp(cur: cursor, args, *param):
+def insertEmp(cur: cursor, args, *params):
+    """Função para realizar a inserção de uma nova empresa. Inicialmente, os valores são inseridos em Terceiros e posteriormente, em Empresa Parceira
+
+    Args:
+        cur (cursor): cur (cursor): cursor de manipulação da database
+        args (_type_): Nome, Cnpj, Numero de funcionarios e numero maximo de funcionarios
+
+    Returns:
+        _type_: retorna um ouput com o retorno do cursor para a consulta em questão, ou -1 em caso de erro
+    """
     sqlTerceiros = "INSERT INTO TERCEIROS (NUCPFCNPJ,NOME,TIPO) VALUES (%s, %s,'EMPRESA PARCEIRA');"
+    data = (args[1], args[0])
     try:
-        data = (args[1], args[0])
         cur.execute(sqlTerceiros, data)
     except Exception as e:
         print(e)
@@ -173,11 +208,19 @@ def insertEmp(cur: cursor, args, *param):
     except Exception as e:
         print(e)
         return(-1)
-
-    return "Empresa inserida com sucesso!"
+    return 
 
 @funcionalidade("insertFunc", help="insereFuncionario")
-def insertFunc(cur: cursor, args, *param):
+def insertFunc(cur: cursor, args, *params):
+    """Gera um sql para a inserção de um novo funcionario, colocando-o inicialmente como pessoa fisica, depois na tabela do tipo de pessoa e por fim como funcionario
+
+    Args:
+        cur (cursor): cursor de manipulação da database
+        args (_type_): Nome e cnpj do funcionario
+
+    Returns:
+        _type_: -1 em caso de erro ou o retorno do cursor para a inserção
+    """
     sqlTerceiros = "INSERT INTO TERCEIROS (NUCPFCNPJ,NOME,TIPO) VALUES (%s, %s,'PESSOA FISICA');"
     try:
         data = (args[1], args[0])
@@ -185,7 +228,6 @@ def insertFunc(cur: cursor, args, *param):
     except Exception as e:
         print(e)
         return(-1)
-
 
     sqlPF = "INSERT INTO PESSOA_FISICA(CPF) VALUES (%s);"
     sqlTipo = "INSERT INTO TIPO_PESSOA_FISICA(CPF,TIPOPF) VALUES (%s,'FUNCIONARIO');"
@@ -200,11 +242,7 @@ def insertFunc(cur: cursor, args, *param):
 
     except:
         return(-1)
-    
-    cur.execute("SELECT F.CPF FROM FUNCIONARIO F;")
-    print(outputToScreen(cur))
-    return outputToScreen(cur)
-
+    return 
 @funcionalidade("lista terceiro", help="Lista o terceiro pesquisado por nome")
 def listCitites(cur: cursor, _):
     # pegar input da cidade
