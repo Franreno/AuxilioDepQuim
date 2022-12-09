@@ -43,11 +43,11 @@ class Funcionalidades:
         self.handler = handler
         self.help = help
 
-    def run(self, args):
+    def run(self, args, *param):
         conn: connection
         cur: cursor
         conn, cur = self.dbHandler.connectToDatabase()
-        outputList = self.handler(cur, args)
+        outputList = self.handler(cur, args, param)
         self.dbHandler.disconnectFromDatabase(conn=conn, cur=cur)
         return outputList
 
@@ -69,9 +69,9 @@ def funcionalidade(name: str, help: str = None):
 ### Rodar o consultas.sql ###
 
 @funcionalidade('consultas', help="Roda o arquivo de consultas.sql")
-def runConsultasSQL(cur: cursor, _):
+def runConsultasSQL(cur: cursor, _, __):
     # Open and read all
-    fd = open('./data/consultas.sql', 'r')
+    fd = open('../data/consultas.sql', 'r')
     sqlFile = fd.read()
     fd.close()
 
@@ -103,33 +103,19 @@ def runConsultasSQL(cur: cursor, _):
     
     return outputList
 
-@funcionalidade("debug", help="Roda um sql")
-def runSQL(cur: cursor, _):
-    print("Enter/Paste your content. Ctrl-D or Ctrl-Z ( windows ) to save it.")
-
-    print("[ DEBUG ] >> ")
-
-    contents = []
-    while True:
-        try:
-            line = input()
-        except EOFError:
-            break
-        contents.append(line)
-    
-    sql = ' '.join(contents)    
-
+@funcionalidade("runSQL", help="Roda um sql")
+def runSQL(cur: cursor, args, *param):
+    sql = args.replace('\n', '')
     try:
         cur.execute(sql)
-    except Exception as err:
-        print(f"\n######################\n[ ERRO ] Commando com erro: {sql}\n######################")
-        print_psycopg2_exception(err)
-        return
+    except:
+            return("[ ERRO ] Commando com erro")
 
     if cur.row_factory == 0:
-            print("[ INFO ] Sem resultados ")
+            return("[ INFO ] Sem resultados ")
     else:
-        outputToScreen(cur)
+        return outputToScreen(cur)
+    
 
 
 @funcionalidade("lista terceiro", help="Lista o terceiro pesquisado por nome")

@@ -1,6 +1,5 @@
 from commands import Funcionalidades
 
-
 def getInput(startString: str = '>> '):
     return input(startString)
 
@@ -39,13 +38,11 @@ def matchAndRun(funcToSearch: str, *args) -> str:
 
     func: Funcionalidades
     # Searches for `funcToSearch` in all of instances of `Funcionalidades`
+    
     for func in Funcionalidades.instances:
-
         # List of words inside the `func` name
         funcWords: list = func.name.split()
-
         funcToSearchWords: list = funcToSearch.split()
-
         if compareFuncsLengths(funcWords, funcToSearchWords) and compareIfListsAreEqualByOgSize(funcWords, funcToSearchWords):
             return func.run(*args, funcToSearch[len(func.name):])
 
