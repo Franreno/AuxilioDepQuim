@@ -1,5 +1,5 @@
 from database_handler import DatabaseHandler
-from psycopg2._psycopg import connection, cursor, OperationalError
+from psycopg2._psycopg import connection, cursor, OperationalError, Error
 from tabulate import tabulate
 import sys
 
@@ -108,21 +108,44 @@ def runSQL(cur: cursor, args, *param):
     sql = args.replace('\n', '')
     try:
         cur.execute(sql)
-    except:
-        return("[ ERRO ] Commando com erro")
+    except Error as e:
+
+        return("[ ERRO ] Commando com erro" + "\n" + str(e))
 
     if cur.row_factory == 0:
         return("[ INFO ] Sem resultados ")
     else:
         return outputToScreen(cur)
     
+
+@funcionalidade("insertEmp", help="insere empresa")
+def insertEmp(cur: cursor, args, *param):
+    sqlTerceiros = "INSERT INTO TERCEIROS (NUCPFCNPJ,NOME,TIPO) VALUES (%s, %s,'EMPRESA PARCEIRA');"
+    try:
+        data = (args[1], args[0])
+        cur.execute(sqlTerceiros, data)
+    except Exception as e:
+        print(e)
+        return(-1)
+    
+    sqlEmpresas = "INSERT INTO EMPRESAS_PARCEIRAS(CNPJ, NUFUNCIONARIOS, MAXFUNCIONARIOS) VALUES (%s, %s, %s);"
+    try:
+        data = (args[1], args[2], args[3])
+        cur.execute(sqlEmpresas, data)
+    except Exception as e:
+        print(e)
+        return(-1)
+
+    return "Empresa inserida com sucesso!"
+
 @funcionalidade("insertFunc", help="insereFuncionario")
 def insertFunc(cur: cursor, args, *param):
     sqlTerceiros = "INSERT INTO TERCEIROS (NUCPFCNPJ,NOME,TIPO) VALUES (%s, %s,'PESSOA FISICA');"
     try:
         data = (args[1], args[0])
         cur.execute(sqlTerceiros, data)
-    except:
+    except Exception as e:
+        print(e)
         return(-1)
 
 
@@ -154,6 +177,7 @@ def listCitites(cur: cursor, _):
         cur.execute(
             f"SELECT * FROM terceiros t WHERE t.nucpfcnpj = '{nucpfcnpj}';")
     except:
+        
         raise Exception(f"Erro ao pegar dados da cidade {nucpfcnpj}")
 
     if cur.rowcount == 0:

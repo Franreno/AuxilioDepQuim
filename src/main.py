@@ -49,7 +49,7 @@ class App(customtkinter.CTk):
         self.sidebar_button_Func.grid(row=4, column=0, padx=20, pady=10)
 
         self.sidebar_button_Emp = customtkinter.CTkButton(
-            self.sidebar_frame, text="Inserir Empresa")
+            self.sidebar_frame, text="Cadastrar Empresa", command = self.cadEmpresa)
         self.sidebar_button_Emp.grid(row=5, column=0, padx=20, pady=10)
 
         self.sidebar_button_Centro = customtkinter.CTkButton(
@@ -64,6 +64,42 @@ class App(customtkinter.CTk):
         self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
         self.textbox.configure(state='disabled')
 
+
+
+    def getInputEmp(self):
+        Nome = self.entryNome.get()
+        Cnpj = self.entryCnpj.get()
+        NumFunc = self.entryNumFunc.get()
+        NumMax = self.entryNumFunc.get()
+        data = (Nome, Cnpj, NumFunc, NumMax)
+        if matchAndRun('insertEmp', data) == -1:
+            tkinter.messagebox.showinfo("ERRO", "Por favor, verificar a integridade das informações adicionadas")
+        pass
+
+
+    def cadEmpresa(self):
+        self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
+        self.DisplayFrame.grid(row = 0, column = 1, rowspan = 7, columnspan = 3, sticky = 'nsew')
+
+        self.entryCnpj= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "CNPJ")
+        self.entryCnpj.grid(row=1, column= 3, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+
+        self.entryNome= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Nome")
+        self.entryNome.grid(row=1, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+
+        self.entryNumFunc= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Numero de Funcionarios")
+        self.entryNumFunc.grid(row=2, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+
+        self.entryNumMax= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Numero Maximo de Funcionarios")
+        self.entryNumMax.grid(row=3, column= 2, columnspan = 1, padx=(10, 10), pady=(20,10), sticky="ew")
+        
+        self.getInputButton = customtkinter.CTkButton(self.DisplayFrame,text = "Inserir", command = self.getInputEmp)
+        self.getInputButton.grid(row = 2, column = 3, padx = 20, pady = 20)
+
+
+        pass
+
+
     def getInputFunc(self):
         nome = self.entryNome.get()
         CPF = self.entryCPF.get()
@@ -71,29 +107,28 @@ class App(customtkinter.CTk):
         data = [nome, CPF, Centro]
         if matchAndRun('insertFunc', data) == -1:
             tkinter.messagebox.showinfo("ERRO", "Por favor, verificar a integridade das informações adicionadas")
-        
-    
-
         return
 
-    def insertFunc(self):
 
-        
+    def insertFunc(self):   
         self.textbox.destroy()
-        self.entryNome= customtkinter.CTkEntry(self, placeholder_text = "Nome")
+        self.DisplayFrame = customtkinter.CTkFrame(self, width = 600, height = 720)
+        self.DisplayFrame.grid(row = 1, column = 1, sticky = 'nsew')
+        
+        self.entryNome= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Nome")
         self.entryNome.grid(row=0, column = 1, columnspan = 2, padx=(10, 10), pady=(20,10), sticky="ew")
 
-        self.entryCPF= customtkinter.CTkEntry(self, placeholder_text = "CPF")
+        self.entryCPF= customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "CPF")
         self.entryCPF.grid(row=0, column= 3, columnspan = 2, padx=(10, 10), pady=(20,10), sticky="ew")
         
 
-        self.entryCentro = customtkinter.CTkEntry(self, placeholder_text = "Centro")
+        self.entryCentro = customtkinter.CTkEntry(self.DisplayFrame, placeholder_text = "Centro")
         self.entryCentro.grid(row = 1, column = 1, sticky = "ew", padx=(10, 10), pady=(20,10))
         
         
-        self.getInputButton = customtkinter.CTkButton(self,text = "Inserir", command = self.getInputFunc)
+        self.getInputButton = customtkinter.CTkButton(self.DisplayFrame,text = "Inserir", command = self.getInputFunc)
         self.getInputButton.grid(row = 1, column = 2, padx = 20, pady = 20)
-        return
+        pass
 
     def runConsultas(self):
         output = matchAndRun('consultas')
