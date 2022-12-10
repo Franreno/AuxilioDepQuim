@@ -23,6 +23,13 @@ Também é necessário dar permissão para os scripts funcionarem. Para isso o c
 sudo chmod +x scripts/*.sh
 ```
 
+
+Este projeto utiliza do pacote `Tkinter` e para isso é necessário instalar o pacote `python3-tk` e o pacote `psycopg2` utiliza do pacote `libpq-dev`. Dessa forma, seguindo as instruções para instalar o [primeiro](https://www.pythonguis.com/installation/install-tkinter-linux/#:~:text=Install%20Tkinter%20via%20apt&text=In%20Ubuntu%20you%20can%20install,for%20is%20named%20python3-tk%20.&text=After%20install%20is%20finished,%20you,and%20import%20tkinter%20without%20errors.) e [segundo](https://stackoverflow.com/questions/11618898/pg-config-executable-not-found) pacote, basta executar o comando abaixo.
+
+```
+sudo apt install python-tk libpq-dev
+```
+
 Também é necessário instalar os pacotes `python` que são utilizados na aplicação. Estes são instalados via o `package manager`: `pip`. Dessa forma, para instalar os pacotes basta executar o comando abaixo:
 
 ```
