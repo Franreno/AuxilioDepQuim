@@ -11,7 +11,7 @@ docker build -t postgres-db ./scripts
 
 docker images -a
 
-docker run -d --name postgresdb -p 5432:5432 postgres-db
+docker run -d --name postgresdb -p 5433:5432 postgres-db
 
 rm scripts/dump_data.sql
 
