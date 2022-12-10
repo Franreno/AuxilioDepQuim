@@ -39,7 +39,7 @@ sudo scripts/install_docker_ubuntu.sh
 
 Após ter instalado o `docker` é necessário rodar o [script de criação do docker](https://github.com/Franreno/AuxilioDepQuim/blob/main/scripts/install.sh). Para isso basta executar o comando: 
 ```
-sudo scripts/install_docker.sh
+sudo scripts/install.sh
 ```
 
 Com isso a aplicação deverá estar corretamente instalada e operando.
