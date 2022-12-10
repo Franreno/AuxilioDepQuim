@@ -4,7 +4,7 @@ from psycopg2._psycopg import connection, cursor
 
 class DatabaseHandler:
 
-    CONNECTION_CONFIG: str = "dbname='Auxilios' user='postgres' host='localhost' password='docker' port='5432'"
+    CONNECTION_CONFIG: str = "dbname='Auxilios' user='postgres' host='localhost' password='docker' port='5433'"
     """CONFIGURATION FOR THE CONNECTION OF THE DATABASE"""
 
     def __init__(self) -> None:
